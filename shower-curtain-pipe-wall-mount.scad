@@ -29,13 +29,24 @@ union(){
     difference(){
         union(){
             cylinder(h=wall_thickerness, r=mount_diameter / 2);
-            translate([-wall_plate_cube_x_transposition,-wall_plate_cube_y_transposition,0]){
+            * translate([-wall_plate_cube_x_transposition,-wall_plate_cube_y_transposition,0]){
+                // plate - cube
                 cube([
                     mount_diameter,
                     wall_plate_cube_y_transposition+epsilon,
                     wall_thickerness
-                ], false); 
+                ], false);                
             }
+            // plate - extruded shape, narrowing down
+            translate([-wall_plate_cube_x_transposition,0,0]){
+                linear_extrude(height = wall_thickerness, center = false, convexity = 10, twist = 0) // , scale=3
+                    polygon(points=[
+                        [0,0],
+                        [mount_diameter,0],
+                        [mount_diameter-pipe_diameter/2+epsilon,-wall_plate_cube_y_transposition],
+                        [pipe_diameter/2-epsilon,-wall_plate_cube_y_transposition]]);
+            }
+            
         }
         // wall screw hole
         translate([0,0,-epsilon]){
